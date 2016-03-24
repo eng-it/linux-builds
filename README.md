@@ -1,2 +1,4 @@
 # linux-builds
-Shell scripts and related glue for custom software installs on network storage
+
+These directories track how individual pieces of software were configured and
+deployed to their locations in /ad/eng/opt/, mainly for reference.
