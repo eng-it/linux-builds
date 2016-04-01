@@ -58,13 +58,6 @@ function qt4_rpms()
 	rsync -rl opt/rh/qt48/root/ /ad/eng/support/software/linux/opt/64/morpheus/
 }
 
-#function setup_qt()
-#{
-#	export QTDIR="$MORPH_DIR"
-#	export QTLIB="$QTDIR/lib"
-#	export QTINC="$QTDIR/include"
-#}
-
 function doxygen()
 {
 	dg="ftp://ftp.stack.nl/pub/users/dimitri/doxygen-1.8.5.src.tar.gz"
@@ -85,29 +78,33 @@ function doxygen()
 
 function morpheus()
 {
-	[ -e .git ] || git clone --depth 1 https://gitlab.com/morpheus.lab/morpheus.git .
-	rm -rf build
-	mkdir -p build
+	#[ -e .git ] || git clone --depth 1 https://gitlab.com/morpheus.lab/morpheus.git .
+	#rm -rf build
+	#mkdir -p build
 	cd build
-	cmake -DCMAKE_INSTALL_PREFIX="$MORPH_DIR" .. 2>&1 | tee ../cmake.log
-	make 2>&1 | tee ../make.log
+	#cmake -DCMAKE_INSTALL_PREFIX="$MORPH_DIR" .. 2>&1 | tee ../cmake.log
+	#make 2>&1 | tee ../make.log
+	make install 2>&1 | tee ../make_install.log
+	install "$D/qt.conf" "$MORPH_DIR/usr/bin/"
+	ln -sf "../usr/bin/qt.conf" "$MORPH_DIR/bin/qt.conf"
 }
 
 function main()
 {
-	export PATH=/usr/lib64/qt4/bin:/sbin:/usr/sbin:/usr/lib64/qt-3.3/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/ad/eng/bin/64:/ad/eng/bin/32:/ad/eng/bin:/usr/local/IT/bin:/ad/eng/sbin/64:/ad/eng/sbin/32:/ad/eng/sbin
+	#export PATH=/usr/lib64/qt4/bin:/sbin:/usr/sbin:/usr/lib64/qt-3.3/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/ad/eng/bin/64:/ad/eng/bin/32:/ad/eng/bin:/usr/local/IT/bin:/ad/eng/sbin/64:/ad/eng/sbin/32:/ad/eng/sbin
 
 	# Set up environment
 	module load bu-webproxy
-	module load gcc
-	module load make
-	module load automake
-	module load autoconf
+	module load gnu-build-system
+	#module load gcc
+	#module load make
+	#module load automake
+	#module load autoconf
 	module load morpheus
 	 
-	which qmake
-	which gmake
-	which rcc
+	#which qmake
+	#which gmake
+	#which rcc
 
 	# for the other compiled packages in the same directory
 	#export PATH="/ad/eng/opt/64/morpheus/bin:$PATH"
@@ -126,8 +123,8 @@ function main()
 	#[ -e doxygen ] || mkdir doxygen
 	#(cd doxygen && doxygen)
 
-	[ -e /tmp/morpheus ] || mkdir /tmp/morpheus
-	(cd /tmp/morpheus && morpheus)
+	mkdir -p "/tmp/$USER-build-morpheus"
+	(cd "/tmp/$USER-build-morpheus" && morpheus)
 }
 
 if [[ ! $0 == "-bash" ]]
