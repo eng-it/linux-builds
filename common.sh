@@ -23,6 +23,8 @@ function expand()
 	case $filetype in
 		*"Zip archive data"*)
 			unzip -qfo $filename ;;
+		*"gzip compressed data, was"*)
+			tar --skip-old-files -xzf $filename ;;
 		*)
 			echo "Can't extract $filename"
 			exit 1
@@ -33,4 +35,9 @@ function expand()
 function zip_maindir()
 {
 	unzip -qql $1 | head -n 1 | cut -c 31-
+}
+
+function tgz_maindir()
+{
+	tar -tzf $1  | head -n 1
 }
