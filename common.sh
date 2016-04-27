@@ -3,6 +3,9 @@
 module load bu-webproxy
 module load gnu-build-system
 
+export ENGOPT="/ad/eng/support/software/linux/opt"
+export WD="$(readlink -f $(dirname $0))"
+
 function get()
 {
 	URL="$1"
@@ -25,6 +28,8 @@ function expand()
 			unzip -qfo $filename ;;
 		*"gzip compressed data, was"*)
 			tar --skip-old-files -xzf $filename ;;
+		*"bzip2 compressed data"*)
+			tar --skip-old-files -xjf $filename ;;
 		*)
 			echo "Can't extract $filename"
 			exit 1
@@ -40,4 +45,9 @@ function zip_maindir()
 function tgz_maindir()
 {
 	tar -tzf $1  | head -n 1
+}
+
+function tbz2_maindir()
+{
+	tar -tjf $1  | head -n 1
 }
