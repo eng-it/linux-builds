@@ -6,26 +6,49 @@
 
 source $(dirname $0)/../common.sh
 
-VER="3.0.8"
-URL="http://prdownloads.sourceforge.net/swig/swig-$VER.tar.gz"
-SWIG="/ad/eng/support/software/linux/opt/64/swig-$VER"
-
 # For python support
 module load anaconda/2.7
 
-function main()
+PREFIX="$ENGOPT/64/swig-$VER"
+
+function pcre()
 {
-	get "$URL"
-	expand $(basename "$URL")
-	DIR=$(tgz_maindir $(basename "$URL"))
-	WD="$(readlink -f $(dirname $0))"
+	VER_PCRE="8.38"
+	URL_PCRE="ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-${VER_PCRE}.tar.bz2"
+
+	get "$URL_PCRE"
+	expand $(basename "$URL_PCRE")
+	DIR=$(tbz2_maindir $(basename "$URL_PCRE"))
 
 	mkdir -p "/tmp/$USER-build-$DIR"
 	cd "/tmp/$USER-build-$DIR"
 
-	$WD/$DIR/configure --prefix=$SWIG 2>&1 | tee $WD/configure.log
+	$WD/$DIR/configure --prefix=$PREFIX 2>&1 | tee $WD/configure_pcre.log
+	make 2>&1 | tee $WD/make_pcre.log
+	make install 2>&1 | tee $WD/make_pcre_install.log
+}
+
+function swig()
+{
+	VER="3.0.8"
+	URL="http://prdownloads.sourceforge.net/swig/swig-$VER.tar.gz"
+
+	get "$URL"
+	expand $(basename "$URL")
+	DIR=$(tgz_maindir $(basename "$URL"))
+
+	mkdir -p "/tmp/$USER-build-$DIR"
+	cd "/tmp/$USER-build-$DIR"
+
+	$WD/$DIR/configure --prefix=$PREFIX 2>&1 | tee $WD/configure.log
 	make 2>&1 | tee $WD/make.log
 	make install 2>&1 | tee $WD/make_install.log
+}
+
+function main()
+{
+	pcre
+	swig
 }
 
 if [[ ! $0 == "-bash" ]]
