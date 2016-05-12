@@ -9,6 +9,7 @@ source $(dirname $0)/../common.sh
 # For python support
 module load anaconda/2.7
 
+VER="3.0.8"
 PREFIX="$ENGOPT/64/swig-$VER"
 
 function pcre()
@@ -30,7 +31,6 @@ function pcre()
 
 function swig()
 {
-	VER="3.0.8"
 	URL="http://prdownloads.sourceforge.net/swig/swig-$VER.tar.gz"
 
 	get "$URL"
