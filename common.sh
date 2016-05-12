@@ -10,9 +10,12 @@ function get()
 {
 	URL="$1"
 	PKG=$(basename "$URL")
-	if [[ ! -e "$PKG" ]]
+	newurl=$(wget -c -S -q "$URL" 2>&1 | grep '^  Location: ' | tail -n 1 | sed 's/^  Location: //')
+	if [[ $newurl == "" ]]
 	then
-		wget "$URL"
+		echo "$URL"
+	else
+		echo "$newurl"
 	fi
 }
 
@@ -26,7 +29,7 @@ function expand()
 	case $filetype in
 		*"Zip archive data"*)
 			unzip -qfo $filename ;;
-		*"gzip compressed data, was"*)
+		*"gzip compressed data"*)
 			tar --skip-old-files -xzf $filename ;;
 		*"bzip2 compressed data"*)
 			tar --skip-old-files -xjf $filename ;;
@@ -35,6 +38,62 @@ function expand()
 			exit 1
 			;;
 	esac
+}
+
+function maindir()
+{
+	filename="$1"
+	filetype=$(file "$filename")
+	case $filetype in
+		*"Zip archive data"*)
+			unzip -qql $1 | head -n 1 | cut -c 31- ;;
+		*"gzip compressed data"*)
+			tar -tzf $1 | head -n 1 ;;
+		*"bzip2 compressed data"*)
+			tar -tjf $1 | head -n 1 ;;
+		*)
+			echo "Can't detect maindir for $filename" > /dev/stderr
+			exit 1
+			;;
+	esac
+}
+
+function configure_make_install()
+{
+	name="$1"
+	URL="$2"
+
+	filename=$(basename $(get "$URL"))
+	expand "$filename"
+	DIR=$(maindir "$filename")
+
+	mkdir -p "/tmp/$USER-build-$DIR"
+	cd "/tmp/$USER-build-$DIR"
+
+	if [ -e $WD/$DIR/configure ]
+	then
+		$WD/$DIR/configure --prefix=$PREFIX 2>&1 | tee $WD/configure_${name}.log
+	fi
+	make 2>&1 | tee $WD/make_${name}.log
+	make install 2>&1 | tee $WD/make_${name}_install.log
+}
+
+function cmake_make_install()
+{
+	name="$1"
+	URL="$2"
+
+	filename=$(basename $(get "$URL"))
+	expand "$filename"
+	DIR=$(maindir "$filename")
+
+	mkdir -p "/tmp/$USER-build-$DIR"
+	cd "/tmp/$USER-build-$DIR"
+
+	cmake -D BUILD_SHARED_LIBS=ON \
+	      -D CMAKE_INSTALL_PREFIX:PATH="$PREFIX" "$WD/$DIR"
+	make 2>&1 | tee $WD/make_${name}.log
+	make install 2>&1 | tee $WD/make_${name}_install.log
 }
 
 function zip_maindir()
