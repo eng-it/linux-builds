@@ -93,6 +93,16 @@ function main()
 	configure_make_install gflags "https://github.com/gflags/gflags/archive/v${GFLAGS_VER}.tar.gz"
 	configure_make_install glog "https://github.com/google/glog/archive/v${GLOG_VER}.tar.gz"
 	caffe_cmake "https://github.com/BVLC/caffe/archive/${VER}.tar.gz"
+	# Post-install I manually copied these directories into
+	# $PREFIX/caffe-files:
+	#  - data
+	#  - examples
+	#  - models
+	#  - scripts
+	# It looks like they assume you'll work directly from the build
+	# directory and have read/write access to everything, but copying
+	# example files to a separate directory seems to work OK too.
+
 }
 
 if [[ ! $0 == "-bash" ]]
