@@ -33,6 +33,8 @@ function expand()
 			tar --skip-old-files -xzf $filename ;;
 		*"bzip2 compressed data"*)
 			tar --skip-old-files -xjf $filename ;;
+		*"xz compressed data"*)
+			tar --skip-old-files -xJf $filename ;;
 		*)
 			echo "Can't extract $filename"
 			exit 1
@@ -51,6 +53,8 @@ function maindir()
 			tar -tzf $1 | head -n 1 ;;
 		*"bzip2 compressed data"*)
 			tar -tjf $1 | head -n 1 ;;
+		*"xz compressed data"*)
+			tar -tJf $1 | head -n 1 ;;
 		*)
 			echo "Can't detect maindir for $filename" > /dev/stderr
 			exit 1
