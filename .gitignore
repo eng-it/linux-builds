@@ -1,4 +1,6 @@
 *.log
-*.tar.gz
+*.gz
+*.bz2
 *.tgz
+*.tbz2
 *.zip
