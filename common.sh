@@ -72,7 +72,7 @@ function configure_make_install()
 	DIR=$(maindir "$filename")
 
 	mkdir -p "/tmp/$USER-build-$DIR"
-	cd "/tmp/$USER-build-$DIR"
+	pushd "/tmp/$USER-build-$DIR"
 
 	if [ -e $WD/$DIR/configure ]
 	then
@@ -80,6 +80,7 @@ function configure_make_install()
 	fi
 	make 2>&1 | tee $WD/make_${name}.log
 	make install 2>&1 | tee $WD/make_${name}_install.log
+	popd
 }
 
 function cmake_make_install()
