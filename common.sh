@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-module load bu-webproxy
+# Load proxy settings if the internet is not reachable
+ping -W 1 -c 1 google.com &>/dev/null || module load bu-webproxy
+
 module load gnu-build-system
 
 export ENGOPT="/ad/eng/support/software/linux/opt"
