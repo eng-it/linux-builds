@@ -130,6 +130,8 @@ function caffe_cmake_git()
 # - run data/mnist/get_mnist.sh
 # - modify  ./examples/mnist/create_mnist.sh to use correct binary
 # - run create_mnist.sh
+# - run python-anaconda ./scripts/download_model_binary.py models/bvlc_reference_caffenet
+# - run ./data/ilsvrc12/get_ilsvrc_aux.sh
 function caffe_files()
 {
 	DIR=$1
