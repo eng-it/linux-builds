@@ -17,7 +17,7 @@ function get()
 	then
 		echo "$URL"
 	else
-		echo "$newurl"
+		printf '%b' "${newurl//%/\\x}"
 	fi
 }
 
@@ -30,13 +30,13 @@ function expand()
 	filetype=$(file "$filename")
 	case $filetype in
 		*"Zip archive data"*)
-			unzip -qfo $filename ;;
+			unzip -qfo "$filename" ;;
 		*"gzip compressed data"*)
-			tar --skip-old-files -xzf $filename ;;
+			tar --skip-old-files -xzf "$filename" ;;
 		*"bzip2 compressed data"*)
-			tar --skip-old-files -xjf $filename ;;
+			tar --skip-old-files -xjf "$filename" ;;
 		*"xz compressed data"*)
-			tar --skip-old-files -xJf $filename ;;
+			tar --skip-old-files -xJf "$filename" ;;
 		*)
 			echo "Can't extract $filename"
 			exit 1
@@ -50,13 +50,13 @@ function maindir()
 	filetype=$(file "$filename")
 	case $filetype in
 		*"Zip archive data"*)
-			unzip -qql $1 | head -n 1 | cut -c 31- ;;
+			unzip -qql "$1" | head -n 1 | cut -c 31- ;;
 		*"gzip compressed data"*)
-			tar -tzf $1 | head -n 1 ;;
+			tar -tzf "$1" | head -n 1 ;;
 		*"bzip2 compressed data"*)
-			tar -tjf $1 | head -n 1 ;;
+			tar -tjf "$1" | head -n 1 ;;
 		*"xz compressed data"*)
-			tar -tJf $1 | head -n 1 ;;
+			tar -tJf "$1" | head -n 1 ;;
 		*)
 			echo "Can't detect maindir for $filename" > /dev/stderr
 			exit 1
@@ -69,7 +69,7 @@ function configure_make_install()
 	name="$1"
 	URL="$2"
 
-	filename=$(basename $(get "$URL"))
+	filename=$(basename "$(get "$URL")")
 	expand "$filename"
 	DIR=$(maindir "$filename")
 
@@ -90,7 +90,7 @@ function cmake_make_install()
 	name="$1"
 	URL="$2"
 
-	filename=$(basename $(get "$URL"))
+	filename=$(basename "$(get "$URL")")
 	expand "$filename"
 	DIR=$(maindir "$filename")
 
