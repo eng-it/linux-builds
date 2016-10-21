@@ -103,6 +103,27 @@ function cmake_make_install()
 	make install 2>&1 | tee $WD/make_${name}_install.log
 }
 
+function git_configure_make_install()
+{
+	URL="$1"
+	name="$(echo $URL | sed 's/^.*\///;s/\.git$//')"
+	git clone --depth 1 "$URL"
+	pushd "$name"
+	if [ -f autogen.sh ]
+	then
+		cmd="autogen.sh"
+	else
+		cmd="configure"
+	fi
+	"./$cmd" --prefix="$PREFIX" 2>&1 | tee "$WD/${cmd}_${name}.log"
+	make install 2>&1 | tee "$WD/make_${name}_install.log"
+	popd
+}
+
+#
+# Below functions obsoleted by the single maindir() above
+#
+
 function zip_maindir()
 {
 	unzip -qql $1 | head -n 1 | cut -c 31-
