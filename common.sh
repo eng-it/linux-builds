@@ -6,7 +6,7 @@ ping -W 1 -c 1 google.com &>/dev/null || module load bu-webproxy
 module load gnu-build-system
 
 export ENGOPT="/ad/eng/support/software/linux/opt"
-export WD="$(readlink -f $(dirname $0))"
+[ $WD  ] || WD="$(readlink -f $(dirname $0 2> /dev/null))" || WD="$PWD"
 
 function get()
 {
@@ -107,7 +107,12 @@ function git_configure_make_install()
 {
 	URL="$1"
 	name="$(echo $URL | sed 's/^.*\///;s/\.git$//')"
-	git clone --depth 1 "$URL"
+	if [ -d "$name" ]
+	then
+		( cd "$name" && git pull )
+	else
+		git clone --depth 1 "$URL"
+	fi
 	pushd "$name"
 	if [ -f autogen.sh ]
 	then
@@ -115,7 +120,7 @@ function git_configure_make_install()
 	else
 		cmd="configure"
 	fi
-	"./$cmd" --prefix="$PREFIX" 2>&1 | tee "$WD/${cmd}_${name}.log"
+	"./$cmd" --prefix="$PREFIX" $BUILDOPTS 2>&1 | tee "$WD/${cmd}_${name}.log"
 	make install 2>&1 | tee "$WD/make_${name}_install.log"
 	popd
 }

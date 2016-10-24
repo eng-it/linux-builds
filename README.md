@@ -7,10 +7,17 @@ for reference.
 The usual workflow is:
 
  1. Build and install a package
- 2. Add any needed symlinks in /ad/eng/bin/ (and 32/ and/or 64/ when needed)
- 3. Add a [shell module] at /ad/eng/etc/modulefiles/
- 4. Add test cases to [grid-tests] repo
- 5. Document on [Grid/Software] page
+ 2. Fix any hardcoded paths as needed (see `eng-fix-install-paths`)
+ 3. Add any needed symlinks in /ad/eng/bin/ (and 32/ and/or 64/ when needed)
+ 4. Add a [shell module] at /ad/eng/etc/modulefiles/
+ 5. Add test cases to [grid-tests] repo
+ 6. Document on [Grid/Software] page
+
+The build scripts can be run from any grid node with the necessary `-devel`
+packages installed.  `qlogin` works, but for long builds it's helpful to add
+the `qsub` directives to the build script and submit it as a batch job instead.
+(Then run `make install` or equivalent manually to write to the kerberized
+install path.)
 
 [shell module]: https://github.com/eng-it/modulefiles
 [grid-tests]: https://github.com/eng-it/grid-tests
