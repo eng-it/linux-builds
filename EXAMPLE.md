@@ -128,7 +128,9 @@ If the install process left references to /ad/eng/support lying around, access
 could fail when users try to access it from the non-kerberized mountpoint.  We
 can do a simple search-and-replace of the one mountpoint string for the other.
 Note that this isn't particularly clever in how it does it (it literally just
-scans for one string and substitutes it for another, using grep and sed).
+scans for one string and substitutes it for another, using grep and sed).  If
+it tries to edit binaries it'll probably trash them, but text files should be
+safe.
 
     eng-fix-install-paths /ad/eng/support/software/linux/opt/64/libctl-3.2.2/
 
