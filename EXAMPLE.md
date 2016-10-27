@@ -104,8 +104,6 @@ installation directory.  Now we should see this directory appear:
 
     /ad/eng/opt/64/libctl-3.2.2/
 
-TODO: commit the build script in git.
-
 Once everything looks good, add the build script to the repository:
 
     rm -rf libctl/build-libctl.o* libctl/libctl-3.2.2/
