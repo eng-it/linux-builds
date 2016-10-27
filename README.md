@@ -19,6 +19,8 @@ the `qsub` directives to the build script and submit it as a batch job instead.
 (Then run `make install` or equivalent manually to write to the kerberized
 install path.)
 
+See the [EXAMPLE.md](EXAMPLE.md) file for a full example.
+
 [shell module]: https://github.com/eng-it/modulefiles
 [grid-tests]: https://github.com/eng-it/grid-tests
 [Grid/Software]: http://collaborate.bu.edu/engit/Grid/Software
